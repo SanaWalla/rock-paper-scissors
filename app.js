@@ -1,63 +1,62 @@
 
-function computerPlay() {
-    let computer = Math.random();
+const button = document.querySelectorAll('.playButton');
+const playAgain = document.querySelector('#playAgain');
+let userScore = 0;
+let computerScore = 0;
 
-    if (computer < .33) {
-        return "rock";
-    } else if (computer < .67) {
-        return "paper";
-    } else {
-        return "scissors";
-    }
+function computerPlay() {
+    let choices = ['Rock', 'Paper', 'Scissors']
+    return choices[Math.floor(Math.random() * choices.length)];
 }
 
-
-function playRound() {
-
-    let playerSelection = prompt("Do you choose: rock, paper, or scissors?");
-
-    let user = playerSelection.toLowerCase();
+function playRound(user) {
 
     let computerSelection = computerPlay();
+    let result = "";
 
     if (user === computerSelection) {
-        return "It's a tie!";
-    } else if ((user === "rock" && computerSelection === "scissors")
+        result = "It's a tie!";
+    } else if ((user === "Rock" && computerSelection === "Scissors")
         ||
-        (user === "paper" && computerSelection === "rock")
+        (user === "Paper" && computerSelection === "Rock")
         ||
-        (user === "scissors" && computerSelection === "paper")) {
-        // User wins
-        return 1;
+        (user === "Scissors" && computerSelection === "Paper")) {
+        result = `You win! ${user} beats ${computerSelection}.`
+        ++userScore
+        document.querySelector('.playerScore').innerHTML = userScore;
     } else {
-        // Computer wins
-        return 2;
+        computerScore += 1;
+        document.querySelector('.compScore').innerHTML = computerScore;
+        result = `You lose! ${computerSelection} beats ${user}.`
     }
+    document.querySelector('#result').innerHTML = result
+    endGame();
 }
 
 
 
-function game() {
-    let userScore = 0;
-    let computerScore = 0;
-
-    for (let i = 0; i < 5; i++) {
-        let result = playRound();
-        if (result === 1) {
-            userScore++;
-        } else if (result === 2) {
-            computerScore++;
+button.forEach((buttons) => {
+    buttons.addEventListener('click', function () {
+        if (userScore >= 5 || computerScore >= 5) {
+            return;
         }
-        console.log(i);
-    }
+        playRound(buttons.dataset.image);
+    })
+})
 
-    if (userScore > computerScore) {
-        return "User wins!"
-    } else if (computerScore > userScore) {
-        return "Computer wins!"
-    } else if (userScore === computerScore) {
-        return "It's a tie!"
+playAgain.addEventListener('click', function () {
+    location.reload();
+})
+
+function endGame() {
+    if (userScore == 5) {
+        result = 'Congrats! You won the game!'
+        document.querySelector('#result').innerHTML = result
+    }
+    if (computerScore == 5) {
+        result = 'Too bad, you lost the game.'
+        document.querySelector('#result').innerHTML = result
     }
 }
 
-console.log(game());
+console.log(button);
